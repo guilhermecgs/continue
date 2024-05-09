@@ -1606,7 +1606,7 @@
           "markdownDescription": "If this field is set to True, we will collect anonymous telemetry as described in the documentation page on telemetry. If set to `false`, we will not collect any data. Learn more in [the docs](https://docs.continue.dev/telemetry).",
           "default": true,
           "type": "boolean"
-        },
+        }, 
         "models": {
           "title": "Models",
           "markdownDescription": "Learn about setting up models in [the documentation](https://docs.continue.dev/model-setup/overview).",
