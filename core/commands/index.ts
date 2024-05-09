@@ -3,6 +3,7 @@ import { stripImages } from "../llm/countTokens";
 import { renderTemplatedString } from "../llm/llms";
 import SlashCommands from "./slash";
 import { promptAsCodeCommandGenerator } from "./slash/promptAsCode";
+import * as fs from 'fs';
 
 export function slashFromCustomCommand(
 	customCommand: CustomCommand,
@@ -59,33 +60,20 @@ export function slashCommandFromDescription(
 }
 
 export function filesUnderPromptFolder(promptFolder: string) {
-
 	// read name from file
     //const promptFolder: string = "/Users/laviviana.proano/Documents/ia/continue/prompt"
     // final folder = config.basefoldeForTheproject + "./prompt"
-
     const fs = require("fs");
-
-    // log... save something on a txt file
     console.log(promptFolder);
-
-    // read description from file
-
-    const promptFiles: string[] = fs.readdirSync(promptFolder);
+	const promptFiles: string[] = fs.readdirSync(promptFolder);
+	console.log(promptFiles);
 	return promptFiles;
-    /*promptFiles.forEach((promptFilename) => {
-        const fileContent: string = fs.readFileSync(
-        `${promptFolder}/${promptFilename}`,
-        "utf-8"
-        );
-        const [name, description, run]: string[] = fileContent.split("\n");
-*/
-	// return here a list of files
 }
 
 
 export function slashCommandFromFile(file: String): SlashCommand {
-	return promptAsCodeCommandGenerator(file);
+	let file2 = fs.readFileSync('/Users/laviviana.proano/Documents/ia/continue/prompt/'+file,'utf8');
+	return promptAsCodeCommandGenerator(file2);
 }
 
 
