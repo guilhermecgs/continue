@@ -5,6 +5,14 @@ import * as fs from 'fs';
 
 export function promptAsCodeCommandGenerator(file: any): SlashCommand {
     
+
+    // very important! the .prompt file must be in the format defined here
+    // https://docs.humanloop.com/docs/prompt-file-format
+    // There is a yaml header with some properties
+    // a divider ---
+    // and a footer with XML syntax
+    // so... you need to create a parser for this file format
+
     const [name,description,prompt]: string[] = file.split("\n");
 
     let customCommand: CustomCommand = {
@@ -17,6 +25,9 @@ export function promptAsCodeCommandGenerator(file: any): SlashCommand {
     name: name,
     description: description,
     run: async function* ({ input, llm, history, ide }) {
+
+        // not sure of whats going on here, but i will take a look on another time.
+
         // Remove slash command prefix from input
         let userInput = input;
         if (userInput.startsWith(`/${customCommand.name}`)) {

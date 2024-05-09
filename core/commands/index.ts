@@ -60,12 +60,14 @@ export function slashCommandFromDescription(
 }
 
 export function filesUnderPromptFolder(promptFolder: string) {
-	// read name from file
-    //const promptFolder: string = "/Users/laviviana.proano/Documents/ia/continue/prompt"
-    // final folder = config.basefoldeForTheproject + "./prompt"
+	
     const fs = require("fs");
     console.log(promptFolder);
+	// dont forget a try catch block here. Reading from file can throw an error ...
 	const promptFiles: string[] = fs.readdirSync(promptFolder);
+	// 1) also, we are not going to read ALL files. We just need the files with a *.prompt extension. 
+	// 2) Make sure that the readdirSync also returns files in nested folders (one folder inside another)
+
 	console.log(promptFiles);
 	return promptFiles;
 }

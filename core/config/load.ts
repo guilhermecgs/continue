@@ -175,9 +175,9 @@ function serializedToIntermediateConfig(
     slashCommands.push(slashFromCustomCommand(command));
   }
 
-  //promptAsCodeCommandGenerator(config)
-  if(true) {
+  if(true) {  // no need to isEnabled for this. The maintener of continue.dev (Nate) said that we can have this always enabled.
      
+    // read the prompt folder from the settings file... 
     const promptFolder: string = "/Users/laviviana.proano/Documents/ia/continue/prompt"
     for (const file of filesUnderPromptFolder(promptFolder) || []) {
       slashCommands.push(slashCommandFromFile(file));
