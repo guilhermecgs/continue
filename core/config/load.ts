@@ -175,15 +175,13 @@ function serializedToIntermediateConfig(
     slashCommands.push(slashFromCustomCommand(command));
   }
 
-  //promptAsCodeCommandGenerator(config)
-  if(true) {
-     
-    const promptFolder: string = "/Users/laviviana.proano/Documents/ia/continue/prompt"
-    for (const file of filesUnderPromptFolder(promptFolder) || []) {
-      slashCommands.push(slashCommandFromFile(file));
-    }
+  let files: string[]=[]
+  const promptFolder: string = "/Users/laviviana.proano/Documents/ia/continue/prompt"
+    
+  for (const file of filesUnderPromptFolder(promptFolder,files) || []) {
+    slashCommands.push(slashCommandFromFile(file));
   }
-
+  
   const config: Config = {
     ...initial,
     slashCommands,

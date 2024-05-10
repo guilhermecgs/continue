@@ -3,9 +3,11 @@ import { stripImages } from "../../llm/countTokens";
 import { renderTemplatedString } from "../../llm/llms";
 import * as fs from 'fs';
 
-export function promptAsCodeCommandGenerator(file: any): SlashCommand {
-    
-    const [name,description,prompt]: string[] = file.split("\n");
+export function promptAsCodeCommandGenerator(filePath: any): SlashCommand {
+    const fs = require("fs");
+	const filetext: string = fs.readFileSync(filePath, 'utf8');;
+
+    const [name,description,prompt]: string[] = filetext.split("\n");
 
     let customCommand: CustomCommand = {
         name: name,
