@@ -176,8 +176,8 @@ function serializedToIntermediateConfig(
   }
 
   let files: string[]=[]
-  const promptFolder: string = "/Users/laviviana.proano/Documents/ia/continue/prompt"
-    
+  
+  const promptFolder = path.join(__dirname, "..", "..", "..", "prompt");
   for (const file of filesUnderPromptFolder(promptFolder,files) || []) {
     slashCommands.push(slashCommandFromFile(file));
   }
