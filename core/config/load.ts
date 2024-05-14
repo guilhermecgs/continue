@@ -21,7 +21,7 @@ import {
   slashCommandFromDescription,
   slashFromCustomCommand,
   slashCommandFromFile,
-  filesUnderPromptFolder
+  filesUnderPromptFolder,
 } from "../commands";
 import { contextProviderClassFromName } from "../context/providers";
 import CustomContextProviderClass from "../context/providers/CustomContextProvider";
@@ -175,17 +175,17 @@ function serializedToIntermediateConfig(
     slashCommands.push(slashFromCustomCommand(command));
   }
 
-  let files: string[]=[]
-  
+  let files: string[] = [];
+
   const promptFolder = path.join(__dirname, "..", "..", "..", "prompt");
-  for (const file of filesUnderPromptFolder(promptFolder,files) || []) {
+  for (const file of filesUnderPromptFolder(promptFolder, files) || []) {
     slashCommands.push(slashCommandFromFile(file));
   }
-  
+
   const config: Config = {
     ...initial,
     slashCommands,
-    slashCommandFromPromptFolderIsEnabled:true,
+    slashCommandFromPromptFolderIsEnabled: true,
     contextProviders: initial.contextProviders || [],
   };
 
