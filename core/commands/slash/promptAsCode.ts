@@ -15,24 +15,36 @@ function yamlHeaderToJSON(yamlHeader: string): any {
   return yamlData;
 }
 
-function readFileContent(filePath: string): string {
-  return fs.readFileSync(filePath, "utf8");
+export function readFileContent(filePath: string): string {
+  return fs.readFileSync(filePath, "utf8").trim();
 }
 
-export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
-  const fileContent = readFileContent(filePath);
+function extractYamlHeaderAndXmlFooter(fileContent: string): {
+  yamlHeader: string;
+  xmlFooter: string;
+} {
   const dividerIndex: number = fileContent.indexOf("---", 3);
   const yamlHeader: string = fileContent.substring(0, dividerIndex).trim();
   const xmlFooter: string = fileContent.substring(dividerIndex + 3).trim();
+  return { yamlHeader, xmlFooter };
+}
 
+function generateCustomCommand(
+  yamlHeader: string,
+  xmlFooter: string,
+): CustomCommand {
   const yamlData: any = yamlHeaderToJSON(yamlHeader);
-
-  const customCommand: CustomCommand = {
+  return {
     name: yamlData.name,
     description: yamlData.description,
     prompt: xmlFooter,
   };
+}
 
+export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
+  const fileContent = readFileContent(filePath);
+  const { yamlHeader, xmlFooter } = extractYamlHeaderAndXmlFooter(fileContent);
+  const customCommand = generateCustomCommand(yamlHeader, xmlFooter);
   return {
     name: customCommand.name,
     description: customCommand.description,
