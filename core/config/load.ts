@@ -177,9 +177,11 @@ function serializedToIntermediateConfig(
 
   let files: string[] = [];
 
-  const promptFolder = path.join(__dirname, "..", "..", "..", "prompt");
-  for (const file of filesUnderPromptFolder(promptFolder, files) || []) {
-    slashCommands.push(slashCommandFromFile(file));
+  const promptFolder = initial.promptPath;
+  if (promptFolder && !files.includes(promptFolder)) {
+    for (const file of filesUnderPromptFolder(promptFolder, files) || []) {
+      slashCommands.push(slashCommandFromFile(file));
+    }
   }
 
   const config: Config = {
@@ -372,6 +374,7 @@ function finalToBrowserConfig(
 ): BrowserSerializedContinueConfig {
   return {
     allowAnonymousTelemetry: final.allowAnonymousTelemetry,
+    promptPath: final.promptPath,
     models: final.models.map((m) => ({
       provider: m.providerName,
       model: m.model,
