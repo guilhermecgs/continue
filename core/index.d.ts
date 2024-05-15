@@ -759,7 +759,7 @@ export interface Config {
   /** The list of slash commands that will be available in the sidebar */
   slashCommands?: SlashCommand[];
   /** If we want to read slash Commands from a file */
-  slashCommandFromPromptFolderIsEnabled?: boolean;
+  slashCommandFromPromptFolderIsEnabled?: boolean;  // TODO: not necessary. Remove
   /** Each entry in this array will originally be a ContextProviderWithParams, the same object from your config.json, but you may add CustomContextProviders.
    * A CustomContextProvider requires you only to define a title and getContextItems function. When you type '@title <query>', Continue will call `getContextItems(query)`.
    */

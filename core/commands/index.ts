@@ -71,6 +71,8 @@ export function filesUnderPromptFolder(
 ): string[] {
   const entries = fs.readdirSync(folderPath, { withFileTypes: true });
 
+  // TODO: make sure ONLY files with extension *.prompt are returned here!
+  
   for (const entry of entries) {
     const fullPath = path.join(folderPath, entry.name);
     if (entry.isDirectory()) {
