@@ -16,6 +16,7 @@ function yamlHeaderToJSON(yamlHeader: string): any {
 }
 
 export function readFileContent(filePath: string): string {
+  // TODO: wrap this function under a try catch block to handle errors. Reading the file system can always throws errors.
   return fs.readFileSync(filePath, "utf8").trim();
 }
 
@@ -23,6 +24,8 @@ function extractYamlHeaderAndXmlFooter(fileContent: string): {
   yamlHeader: string;
   xmlFooter: string;
 } {
+
+  // TODO:   refactor "---"   as a constant . Something like SECTION_DIVIDER="---"
   const dividerIndex: number = fileContent.indexOf("---", 3);
   const yamlHeader: string = fileContent.substring(0, dividerIndex).trim();
   const xmlFooter: string = fileContent.substring(dividerIndex + 3).trim();
@@ -37,7 +40,9 @@ function generateCustomCommand(
   return {
     name: yamlData.name,
     description: yamlData.description,
+    // TODO: xmlFooter still as a tag <prompt> lorem ipsum ... </prompt>   Can you remove here the <prompt></prompt> ?
     prompt: xmlFooter,
+
   };
 }
 
@@ -80,8 +85,5 @@ export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
         yield stripImages(chunk.content);
       }
     },
-
-    // If true, this command will be run in NodeJs and have access to the filesystem and other Node-only APIs
-    // You must make sure to dynamically import any Node-only dependencies in your command so that it doesn't break in the browser
   };
 }

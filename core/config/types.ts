@@ -717,7 +717,8 @@ declare global {
   export interface SerializedContinueConfig {
     env?: string[];
     allowAnonymousTelemetry?: boolean;
-    promptPath?: string;
+    promptPath?: string; // TODO: remove from here
+
     models: ModelDescription[];
     systemMessage?: string;
     completionOptions?: BaseCompletionOptions;
@@ -734,6 +735,7 @@ declare global {
     ui?: ContinueUIConfig;
     reranker?: RerankerDescription;
     experimental?: ExperimantalConfig;
+    // TODO: change   promptPath to INSIDE experimental tag.
   }
   
   export type ConfigMergeType = "merge" | "overwrite";
