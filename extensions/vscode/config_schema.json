@@ -1609,7 +1609,7 @@
         },
         "promptPath": {
           "title": "path for prompt files",
-          "description": "from this prompt files we are going to create slash commands",
+          "markdownDescription": "If this field is set with a valu, we will going to create slash commands from this prompt path.",
           "type": "string"
         },
         "models": {
