@@ -67,19 +67,31 @@ export function slashCommandFromDescription(
 
 export function filesUnderPromptFolder(
   folderPath: string,
-  files: string[],
+  files: string[] = [],
 ): string[] {
-  const entries = fs.readdirSync(folderPath, { withFileTypes: true });
+  const entries = readDirectoryEntries(folderPath);
 
   for (const entry of entries) {
-    const fullPath = path.join(folderPath, entry.name);
+    const fullPath = getFullPath(folderPath, entry.name);
     if (entry.isDirectory()) {
       filesUnderPromptFolder(fullPath, files);
-    } else {
+    } else if (isPromptFile(entry)) {
       files.push(fullPath);
     }
   }
+
   return files;
+}
+
+function getFullPath(folderPath: string, entryName: string): string {
+  return path.join(folderPath, entryName);
+}
+
+function readDirectoryEntries(folderPath: string): fs.Dirent[] {
+  return fs.readdirSync(folderPath, { withFileTypes: true });
+}
+function isPromptFile(entry: fs.Dirent): boolean {
+  return entry.isFile() && entry.name.endsWith(".prompt");
 }
 
 export function slashCommandFromFile(file: string): SlashCommand {
