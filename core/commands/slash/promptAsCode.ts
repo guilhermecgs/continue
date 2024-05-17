@@ -16,14 +16,21 @@ function yamlHeaderToJSON(yamlHeader: string): any {
 }
 
 export function readFileContent(filePath: string): string {
-  return fs.readFileSync(filePath, "utf8").trim();
+  try {
+    const fileContent = fs.readFileSync(filePath, "utf8").trim();
+    return fileContent;
+  } catch (error) {
+    console.error(`Error reading file at ${filePath}:`, error);
+    throw new Error(`Could not read file at ${filePath}`);
+  }
 }
 
 function extractYamlHeaderAndXmlFooter(fileContent: string): {
   yamlHeader: string;
   xmlFooter: string;
 } {
-  const dividerIndex: number = fileContent.indexOf("---", 3);
+  const SECTION_DIVIDER = "---";
+  const dividerIndex: number = fileContent.indexOf(SECTION_DIVIDER, 3);
   const yamlHeader: string = fileContent.substring(0, dividerIndex).trim();
   const xmlFooter: string = fileContent.substring(dividerIndex + 3).trim();
   return { yamlHeader, xmlFooter };
@@ -31,14 +38,20 @@ function extractYamlHeaderAndXmlFooter(fileContent: string): {
 
 function generateCustomCommand(
   yamlHeader: string,
-  xmlFooter: string,
+  xmlFooter: string
 ): CustomCommand {
   const yamlData: any = yamlHeaderToJSON(yamlHeader);
+
+  const promptContent = removeXmlTags(xmlFooter);
+
   return {
     name: yamlData.name,
     description: yamlData.description,
-    prompt: xmlFooter,
+    prompt: promptContent,
   };
+}
+function removeXmlTags(xmlContent: string): string {
+  return xmlContent.replace(/<[^>]*>/g, '').trim();
 }
 
 export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
@@ -49,7 +62,6 @@ export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
     name: customCommand.name,
     description: customCommand.description,
     run: async function* ({ input, llm, history, ide }) {
-      // Remove slash command prefix from input
       let userInput = input;
       if (userInput.startsWith(`/${customCommand.name}`)) {
         userInput = userInput
@@ -57,7 +69,6 @@ export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
           .trimStart();
       }
 
-      // Render prompt template
       const promptUserInput = await renderTemplatedString(
         customCommand.prompt,
         ide.readFile.bind(ide),
@@ -65,7 +76,6 @@ export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
       );
 
       const messages = [...history];
-      // Find the last chat message with this slash command and replace it with the user input
       for (let i = messages.length - 1; i >= 0; i--) {
         if (
           messages[i].role === "user" &&
@@ -81,7 +91,5 @@ export function promptAsCodeCommandGenerator(filePath: string): SlashCommand {
       }
     },
 
-    // If true, this command will be run in NodeJs and have access to the filesystem and other Node-only APIs
-    // You must make sure to dynamically import any Node-only dependencies in your command so that it doesn't break in the browser
   };
 }
