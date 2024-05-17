@@ -711,12 +711,12 @@ interface ModelRoles {
 interface ExperimantalConfig {
   contextMenuPrompts?: ContextMenuConfig;
   modelRoles?: ModelRoles;
+  promptPath?: string;
 }
 
 export interface SerializedContinueConfig {
   env?: string[];
   allowAnonymousTelemetry?: boolean;
-  promptPath?: string;
   models: ModelDescription[];
   systemMessage?: string;
   completionOptions?: BaseCompletionOptions;

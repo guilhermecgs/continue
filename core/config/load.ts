@@ -177,7 +177,7 @@ function serializedToIntermediateConfig(
 
   let files: string[] = [];
 
-  const promptFolder = initial.promptPath;
+  const promptFolder = initial.experimental?.promptPath;
   if (promptFolder && !files.includes(promptFolder)) {
     for (const file of filesUnderPromptFolder(promptFolder, files) || []) {
       slashCommands.push(slashCommandFromFile(file));
