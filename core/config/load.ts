@@ -20,6 +20,8 @@ import {
 import {
   slashCommandFromDescription,
   slashFromCustomCommand,
+  slashCommandFromFile,
+  filesUnderPromptFolder,
 } from "../commands";
 import { contextProviderClassFromName } from "../context/providers";
 import CustomContextProviderClass from "../context/providers/CustomContextProvider";
@@ -49,6 +51,7 @@ import {
   defaultSlashCommandsJetBrains,
   defaultSlashCommandsVscode,
 } from "./default";
+import { promptAsCodeCommandGenerator } from "../commands/slash/promptAsCode";
 const { execSync } = require("child_process");
 
 function resolveSerializedConfig(filepath: string): SerializedContinueConfig {
@@ -172,9 +175,19 @@ function serializedToIntermediateConfig(
     slashCommands.push(slashFromCustomCommand(command));
   }
 
+  let files: string[] = [];
+
+  const promptFolder = initial.experimental?.promptPath;
+  if (promptFolder && !files.includes(promptFolder)) {
+    for (const file of filesUnderPromptFolder(promptFolder, files) || []) {
+      slashCommands.push(slashCommandFromFile(file));
+    }
+  }
+
   const config: Config = {
     ...initial,
     slashCommands,
+    slashCommandFromPromptFolderIsEnabled: true,
     contextProviders: initial.contextProviders || [],
   };
 
@@ -361,6 +374,7 @@ function finalToBrowserConfig(
 ): BrowserSerializedContinueConfig {
   return {
     allowAnonymousTelemetry: final.allowAnonymousTelemetry,
+    promptPath: final.promptPath,
     models: final.models.map((m) => ({
       provider: m.providerName,
       model: m.model,
