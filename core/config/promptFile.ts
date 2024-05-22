@@ -3,6 +3,7 @@ import { IDE, SlashCommand } from "..";
 import { stripImages } from "../llm/countTokens";
 import { renderTemplatedString } from "../llm/llms";
 import { getBasename } from "../util";
+import FolderContextProvider from "../context/providers/FolderContextProvider";
 
 export async function getPromptFiles(
   ide: IDE,
@@ -21,10 +22,7 @@ export async function getPromptFiles(
   }
 }
 
-export function slashCommandFromPromptFile(
-  path: string,
-  content: string,
-): SlashCommand {
+export function readPromptFile(path: string, content: string) {
   let [preambleRaw, prompt] = content.split("\n---\n");
   if (prompt === undefined) {
     prompt = preambleRaw;
@@ -34,12 +32,41 @@ export function slashCommandFromPromptFile(
   const preamble = YAML.parse(preambleRaw) ?? {};
   const name = preamble.name ?? getBasename(path).split(".prompt")[0];
   const description = preamble.description ?? name;
+  const context = preamble.context ?? {};
 
   let systemMessage: string | undefined = undefined;
   if (prompt.includes("<system>")) {
     systemMessage = prompt.split("<system>")[1].split("</system>")[0].trim();
     prompt = prompt.split("</system>")[1].trim();
   }
+
+  return {
+    name,
+    description,
+    context,
+    systemMessage,
+    prompt,
+  };
+}
+
+// WIP
+// export function contextProviderFromPromptFile(path: string, content: string) {
+//   const promptFileContent = readPromptFile(path, content);
+//   if ( promptFileContent.context!== ) {
+
+//   }
+
+//   }
+// }
+
+export function slashCommandFromPromptFile(
+  path: string,
+  content: string,
+): SlashCommand {
+  const { name, description, systemMessage, prompt } = readPromptFile(
+    path,
+    content,
+  );
 
   return {
     name,
